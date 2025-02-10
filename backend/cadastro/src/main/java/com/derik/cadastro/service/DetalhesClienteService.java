@@ -22,14 +22,12 @@ public class DetalhesClienteService {
 
     @Transactional
     public DetalhesCliente salvarDetalhesCliente(DetalhesCliente detalhesCliente) {
-        // Check if the cliente exists
-        Optional<Cliente> clienteOpt = clienteRepository.findById(detalhesCliente.getIdCliente());
+        Optional<Cliente> clienteOpt = clienteRepository.findByCpf(detalhesCliente.getCpfCliente());
 
-        if (!clienteOpt.isPresent()) {
-            // Handle the case where the cliente does not exist
-            throw new EntityNotFoundException("Cliente with id " + detalhesCliente.getIdCliente() + " does not exist");
+        if (clienteOpt.isEmpty()) {
+            throw new EntityNotFoundException("Cliente com o CPF:" + detalhesCliente.getCpfCliente() + " não existe");
         }
-        // Save the detalhes_cliente
+
         return detalhesClienteRepository.save(detalhesCliente);
     }
 }

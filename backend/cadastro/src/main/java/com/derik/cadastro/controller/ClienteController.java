@@ -22,16 +22,11 @@ public class ClienteController {
         return new ResponseEntity<>(salvarCliente, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/detalhes")
-    public ResponseEntity<Cliente> buscarClienteComDetalhes(@PathVariable Long id) {
-        Optional<Cliente> cliente = clienteService.buscarClienteComDetalhes(id);
+    @GetMapping("/{cpf}/detalhes")
+    public ResponseEntity<Cliente> buscarClienteComDetalhes(@PathVariable String cpf) {
+        Optional<Cliente> cliente = clienteService.buscarClienteComDetalhes(cpf);
         return cliente.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-//    @DeleteMapping("/cliente")
-//    public ResponseEntity<Cliente> removerCliente(@RequestParam(name ="clientId") long clientId) {
-//        Cliente removerCliente = clienteService.removerCliente(clientId);
-//        return new ResponseEntity<>(removerCliente, HttpStatus.OK);
-//    }
 }
