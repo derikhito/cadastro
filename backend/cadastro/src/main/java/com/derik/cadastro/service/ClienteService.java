@@ -31,6 +31,26 @@ public class ClienteService {
         return clienteRepository.findByCpf(cpfLimpo);
     }
 
+
+    @Transactional
+    public void deletarCliente(String cpf) {
+        String cpfLimpo = limparEValidarCPF(cpf);
+        if (!clienteRepository.existsByCpf(cpfLimpo)) {
+            throw new IllegalArgumentException("Cliente com o CPF fornecido não existe.");
+        }
+        clienteRepository.deleteByCpf(cpfLimpo);
+    }
+
+    @Transactional
+    public Cliente atualizarCliente(String cpf, Cliente clienteAtualizado) {
+        String cpfLimpo = limparEValidarCPF(cpf);
+        Cliente clienteExistente = clienteRepository.findByCpf(cpfLimpo)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente com o CPF fornecido não existe."));
+        clienteExistente.setNome(clienteAtualizado.getNome());
+        clienteExistente.setDataNascimento(clienteAtualizado.getDataNascimento());
+        return clienteRepository.save(clienteExistente);
+    }
+
     private String limparEValidarCPF(String cpf) {
         String cpfLimpo = ValidadorCPF.limparCPF(cpf);
         if (!ValidadorCPF.cpfValido(cpfLimpo)) {
