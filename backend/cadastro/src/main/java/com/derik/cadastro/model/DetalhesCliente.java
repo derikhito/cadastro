@@ -12,11 +12,11 @@ public class DetalhesCliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "cpf_cliente", nullable = false)
-    private String cpfCliente;
+    @Column(name = "cpf", nullable = false)
+    private String cpf;
 
     @ManyToOne
-    @JoinColumn(name = "cpf_cliente", insertable = false, updatable = false)
+    @JoinColumn(name = "cpf", referencedColumnName = "cpf", insertable = false, updatable = false)
     @JsonBackReference
     private Cliente cliente;
 

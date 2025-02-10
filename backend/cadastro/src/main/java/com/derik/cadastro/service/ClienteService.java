@@ -3,6 +3,7 @@ package com.derik.cadastro.service;
 import com.derik.cadastro.model.Cliente;
 import com.derik.cadastro.repository.ClienteRepository;
 import com.derik.cadastro.util.ValidadorCPF;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ClienteService {
     public void deletarCliente(String cpf) {
         String cpfLimpo = limparEValidarCPF(cpf);
         if (!clienteRepository.existsByCpf(cpfLimpo)) {
-            throw new IllegalArgumentException("Cliente com o CPF fornecido não existe.");
+            throw new EntityNotFoundException("Cliente com o CPF fornecido não existe.");
         }
         clienteRepository.deleteByCpf(cpfLimpo);
     }
@@ -45,7 +46,7 @@ public class ClienteService {
     public Cliente atualizarCliente(String cpf, Cliente clienteAtualizado) {
         String cpfLimpo = limparEValidarCPF(cpf);
         Cliente clienteExistente = clienteRepository.findByCpf(cpfLimpo)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente com o CPF fornecido não existe."));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente com o CPF fornecido não existe."));
         clienteExistente.setNome(clienteAtualizado.getNome());
         clienteExistente.setDataNascimento(clienteAtualizado.getDataNascimento());
         return clienteRepository.save(clienteExistente);
