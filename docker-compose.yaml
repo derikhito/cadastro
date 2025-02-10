@@ -1,0 +1,56 @@
+services:
+  mariadb:
+    image: mariadb:11
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=sankhyatest
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - wildfly
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:mariadb://mariadb:3306/sankhyatest -user=root -password=root -baselineOnMigrate=true -connectRetries=60 migrate -locations=filesystem:/flyway/sql
+    volumes:
+      - ./database:/flyway/sql
+    depends_on:
+      - mariadb
+    networks:
+      - wildfly
+
+  wildfly:
+    image: jboss/wildfly
+    networks:
+      - wildfly
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_NAME=sankhyatest
+#  app:   
+#   build: .    
+#   restart: always
+#   ports:
+#     - "8080:8080"
+#     depends_on:
+#     - mariadb
+#   environment:      
+#     SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/sistema_cadastro
+#     SPRING_DATASOURCE_USERNAME: usuario
+#     SPRING_DATASOURCE_PASSWORD: senha
+
+
+
+volumes:
+  db-data:
+
+networks: 
+  wildfly:
